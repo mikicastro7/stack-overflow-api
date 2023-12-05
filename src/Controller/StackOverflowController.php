@@ -29,12 +29,15 @@ class StackOverflowController extends AbstractController
             return $this->json(['error' => 'The tagged parameter is required.'], 400);
         }
 
-        $apiUrl = sprintf(
-            'https://api.stackexchange.com/2.3/questions?order=desc&sort=activity&site=stackoverflow&tagged=%s&todate=%s&fromdate=%s',
-            urlencode($tagged),
-            $toDate ? urlencode($toDate) : '',
-            $fromDate ? urlencode($fromDate) : ''
-        );
+        $apiUrl = 'https://api.stackexchange.com/2.3/questions?order=desc&sort=activity&site=stackoverflow';
+
+        if (!empty($fromDate)) {
+            $apiUrl .= '&fromDate=' . urlencode($fromDate);
+        }
+
+        if (!empty($toDate)) {
+            $apiUrl .= '&todate=' . urlencode($toDate);
+        }
 
         try {
             $response = $this->client->request('GET', $apiUrl);
