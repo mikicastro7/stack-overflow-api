@@ -19,13 +19,13 @@ class QuestionsStackOverflowRequest
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $tagged = null;
+    private ?string $tagged;
 
-    #[ORM\Column]
-    private ?int $todate = null;
+    #[ORM\Column(type: 'datetime')]
+    private ?\DateTimeInterface $fromdate;
 
-    #[ORM\Column]
-    private ?int $fromdate = null;
+    #[ORM\Column(type: 'datetime', nullable: true)]
+    private ?\DateTimeInterface $todate = null;
 
     #[ORM\ManyToMany(targetEntity: QuestionStackOverflow::class, mappedBy: 'QuestionStackOverflowRequestId')]
     private Collection $questionsStackOverflow;
@@ -52,27 +52,25 @@ class QuestionsStackOverflowRequest
         return $this;
     }
 
-    public function getTodate(): ?int
-    {
-        return $this->todate;
-    }
-
-    public function setTodate(int $todate): static
-    {
-        $this->todate = $todate;
-
-        return $this;
-    }
-
-    public function getFromdate(): ?int
+    public function getFromdate(): ?\DateTimeInterface
     {
         return $this->fromdate;
     }
 
-    public function setFromdate(int $fromdate): static
+    public function setFromdate(?\DateTimeInterface $fromdate): self
     {
         $this->fromdate = $fromdate;
+        return $this;
+    }
 
+    public function getTodate(): ?\DateTimeInterface
+    {
+        return $this->todate;
+    }
+
+    public function setTodate(?\DateTimeInterface $todate): self
+    {
+        $this->todate = $todate;
         return $this;
     }
 
