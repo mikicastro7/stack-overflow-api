@@ -7,15 +7,15 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Contracts\HttpClient\HttpClientInterface;
+use App\Service\StackOverflowService;
 
 class StackOverflowController extends AbstractController
 {
-    private HttpClientInterface $client;
+    private $stackOverflowService;
 
-    public function __construct(HttpClientInterface $client)
+    public function __construct(StackOverflowService $stackOverflowService)
     {
-        $this->client = $client;
+        $this->stackOverflowService = $stackOverflowService;
     }
 
     #[Route('/stackoverflow-questions', name: 'stackoverflow_questions', methods: ['GET'])]
@@ -29,21 +29,8 @@ class StackOverflowController extends AbstractController
             return $this->json(['error' => 'The tagged parameter is required.'], 400);
         }
 
-        $apiUrl = 'https://api.stackexchange.com/2.3/questions?order=desc&sort=activity&site=stackoverflow';
-
-        if (!empty($fromDate)) {
-            $apiUrl .= '&fromDate=' . urlencode($fromDate);
-        }
-
-        if (!empty($toDate)) {
-            $apiUrl .= '&todate=' . urlencode($toDate);
-        }
-
         try {
-            $response = $this->client->request('GET', $apiUrl);
-            $data = $response->toArray();
-
-            $items = $data['items'] ?? [];
+            $items = $this->stackOverflowService->getQuestions($tagged, $toDate, $fromDate);
 
             return $this->json([
                 'success' => true,
