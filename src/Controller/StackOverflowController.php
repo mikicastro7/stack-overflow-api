@@ -30,7 +30,7 @@ class StackOverflowController extends AbstractController
         }
 
         try {
-            $items = $this->stackOverflowService->getQuestions($tagged, $toDate, $fromDate);
+            $items = $this->stackOverflowService->handleQuestionsRequest($tagged, $toDate, $fromDate);
 
             return $this->json([
                 'success' => true,
@@ -39,7 +39,7 @@ class StackOverflowController extends AbstractController
         } catch (\Exception $e) {
             return $this->json([
                 'success' => false,
-                'message' => 'Error communicating with Stack Exchange API',
+                'message' => $e->getMessage(),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }

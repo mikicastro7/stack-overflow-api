@@ -9,6 +9,8 @@ use Doctrine\ORM\Mapping as ORM;
 use App\Entity\Traits\DatesTrait;
 
 #[ORM\Entity(repositoryClass: QuestionStackOverflowRepository::class)]
+#[ORM\UniqueConstraint(fields: ['stackOverflowId'], name: 'uniq_stack_overflow_id')]
+
 class QuestionStackOverflow
 {
     use DatesTrait;
